@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard Geo Futuristik</title>
+
+  <!-- CSS Anda -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- CesiumJS -->
+  <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.128/Build/Cesium/Widgets/widgets.css" />
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.128/Build/Cesium/Cesium.js"></script>
+
+  <style>
+    /* ===== Cesium container & layering ===== */
+    .map { position: relative; }
+    #cesiumContainer{
+      position:absolute; inset:0;
+      z-index:0;
+      border-radius: inherit;
+      overflow:hidden;
+    }
+    .map-overlay, .hud-lines, .bottom-tabs, .map-tools{
+      z-index: 3;
+      position: absolute;
+    }
+    .map::after{ content:none !important; } /* matikan placeholder map */
+
+    /* ===== Scanline + vignette overlay ===== */
+    .fx-layer{
+      position:absolute; inset:0;
+      z-index:2;
+      pointer-events:none;
+      border-radius: inherit;
+      background:
+        radial-gradient(900px 520px at 50% 35%, rgba(57,213,255,.18), transparent 55%),
+        radial-gradient(900px 520px at 50% 75%, rgba(255,77,227,.10), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35));
+      opacity:.85;
+      mix-blend-mode: screen;
+    }
+    .scanlines{
+      position:absolute; inset:0;
+      z-index:2;
+      pointer-events:none;
+      border-radius: inherit;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(57,213,255,.06) 0px,
+          rgba(57,213,255,.02) 1px,
+          rgba(0,0,0,0) 3px,
+          rgba(0,0,0,0) 6px
+        );
+      opacity:.22;
+    }
+    .scanlines.off, .fx-layer.off { display:none; }
+
+    /* ===== Floating tools panel ===== */
+    .map-tools{
+      top:14px; right:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      width: 240px;
+    }
+    .tool-card{
+      background: rgba(7,18,45,.32);
+      border: 1px solid rgba(57,213,255,.18);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.35), 0 0 18px rgba(57,213,255,.18);
+      backdrop-filter: blur(10px);
+    }
+    .tool-title{
+      font-size:12px;
+      letter-spacing:.7px;
+      opacity:.85;
+      margin-bottom:8px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .pill{
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid rgba(57,213,255,.22);
+      background: rgba(5,18,40,.35);
+      opacity:.9;
+    }
+    .toggle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:8px 8px;
+      border-radius: 12px;
+      border:1px solid rgba(57,213,255,.14);
+      background: rgba(7,18,45,.25);
+      margin:7px 0;
+      cursor:pointer;
+      user-select:none;
+      transition: .18s ease;
+    }
+    .toggle:hover{
+      border-color: rgba(57,213,255,.40);
+      box-shadow: 0 0 22px rgba(57,213,255,.18);
+      transform: translateY(-1px);
+    }
+    .toggle .label{
+      font-size:12px;
+      opacity:.9;
+    }
+    .switch{
+      width:44px; height:24px;
+      border-radius:999px;
+      border:1px solid rgba(57,213,255,.22);
+      background: rgba(0,0,0,.22);
+      position:relative;
+      flex: 0 0 auto;
+    }
+    .knob{
+      position:absolute; top:2px; left:2px;
+      width:20px; height:20px; border-radius:50%;
+      background: rgba(57,213,255,.85);
+      box-shadow: 0 0 18px rgba(57,213,255,.35);
+      transition: .18s ease;
+    }
+    .toggle.on .switch{
+      background: rgba(57,213,255,.10);
+      border-color: rgba(57,213,255,.45);
+    }
+    .toggle.on .knob{ left:22px; background: rgba(255,77,227,.85); box-shadow: 0 0 18px rgba(255,77,227,.35); }
+
+    /* ===== Cesium widgets styling (lebih menyatu) ===== */
+    .cesium-viewer-toolbar,
+    .cesium-toolbar,
+    .cesium-viewer-geocoderContainer{
+      top: 14px !important;
+      left: 14px !important;
+    }
+    .cesium-button, .cesium-toolbar-button{
+      border-radius: 12px !important;
+      border: 1px solid rgba(57,213,255,.22) !important;
+      background: rgba(7,18,45,.35) !important;
+      box-shadow: 0 0 18px rgba(57,213,255,.12) !important;
+    }
+    .cesium-geocoder-input{
+      border-radius: 14px !important;
+      border: 1px solid rgba(57,213,255,.22) !important;
+      background: rgba(7,18,45,.35) !important;
+      color: rgba(230,245,255,.92) !important;
+      box-shadow: 0 0 18px rgba(57,213,255,.12) !important;
+    }
+
+
+    /* ===== Layout fix: map bersih, kontrol dan info masuk panel kanan ===== */
+    .map{ isolation:isolate; }
+    .map-overlay{
+      top:14px;
+      left:82px;
+      right:16px;
+      max-width: calc(100% - 112px);
+      align-items:flex-start;
+      pointer-events:none;
+    }
+    .map-overlay .tag{ pointer-events:auto; }
+    .map-tools{
+      position:relative !important;
+      inset:auto !important;
+      width:100% !important;
+      display:block !important;
+      z-index:auto !important;
+    }
+    .tool-card{ width:100%; }
+    .right{
+      min-width:0;
+      overflow:auto;
+      scrollbar-width: thin;
+    }
+    .right .map-tools{ margin:0; }
+    .info-empty{
+      font-size:12px;
+      opacity:.72;
+      line-height:1.45;
+      padding:10px;
+      border-radius:12px;
+      border:1px dashed rgba(57,213,255,.20);
+      background: rgba(7,18,45,.20);
+    }
+    .cctv-detail{ display:grid; gap:9px; }
+    .detail-row{
+      display:grid;
+      grid-template-columns:88px 1fr;
+      gap:10px;
+      font-size:12px;
+      line-height:1.35;
+      padding:8px 0;
+      border-bottom:1px solid rgba(57,213,255,.12);
+    }
+    .detail-row:last-child{ border-bottom:0; }
+    .detail-key{ opacity:.65; }
+    .detail-val{ opacity:.94; word-break:break-word; }
+    .stream-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      margin-top:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      color:rgba(235,250,255,.96);
+      text-decoration:none;
+      border:1px solid rgba(57,213,255,.35);
+      background:linear-gradient(90deg, rgba(57,213,255,.18), rgba(255,77,227,.13));
+      box-shadow:var(--glow);
+      font-size:12px;
+      font-weight:700;
+    }
+    .stream-btn:hover{ box-shadow:var(--glowStrong); border-color:rgba(57,213,255,.58); }
+    .cesium-infoBox{ display:none !important; }
+    .cesium-viewer-toolbar{
+      top:62px !important;
+      left:16px !important;
+      right:auto !important;
+      z-index:5 !important;
+    }
+    .cesium-viewer-geocoderContainer{
+      top:62px !important;
+      left:16px !important;
+      right:auto !important;
+      z-index:5 !important;
+    }
+    .cesium-viewer-geocoderContainer + .cesium-button,
+    .cesium-viewer-toolbar .cesium-button{
+      margin-top:0 !important;
+    }
+    .cesium-viewer-bottom,
+    .cesium-credit-logoContainer,
+    .cesium-credit-textContainer{
+      z-index:4 !important;
+    }
+    .bottom-tabs{
+      bottom:18px;
+      z-index:6;
+    }
+    .cesium-viewer-bottom{
+      left:12px !important;
+      bottom:10px !important;
+      max-width:42%;
+      padding-right:10px;
+      border-radius:10px;
+      background:rgba(5,12,28,.25);
+      backdrop-filter:blur(6px);
+    }
+    @media (max-width: 1100px){
+      .map-overlay{ left:14px; max-width:calc(100% - 28px); }
+      .cesium-viewer-toolbar,
+      .cesium-viewer-geocoderContainer{ top:78px !important; }
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="bg"></div>
+
+  <header class="topbar panel">
+    <div class="brand">
+      <span class="dot"></span>
+      <div>
+        <div class="title">Dashboard Kota Malang</div>
+        <div class="subtitle">Peta 3D + CCTV (Futuristic HUD)</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="chip" id="chipSuhu">30°C</div>
+      <div class="chip" id="chipTanggal">2020-07-08</div>
+      <div class="chip" id="chipJam">17:10:55</div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- SIDEBAR KIRI -->
+    <aside class="sidebar panel">
+      <div class="section-title">Navigasi Cepat</div>
+
+      <button class="nav-item active" data-fly="malang">Pusat Kota Malang</button>
+      <button class="nav-item" data-fly="sukun">Kecamatan Sukun</button>
+      <button class="nav-item" data-fly="klojen">Kecamatan Klojen</button>
+      <button class="nav-item" data-fly="blimbing">Kecamatan Blimbing</button>
+      <button class="nav-item" data-fly="lowokwaru">Kecamatan Lowokwaru</button>
+
+      <div class="spacer"></div>
+
+      <div class="kpi-box">
+        <div class="kpi">
+          <div class="kpi-label">Jumlah Titik CCTV</div>
+          <div class="kpi-value" id="kpiCctv">-</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Status Layer</div>
+          <div class="kpi-value" style="font-size:18px" id="kpiLayer">BUILDINGS ON</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- PETA (CESIUM) -->
+    <section class="map panel">
+      <div id="cesiumContainer" aria-label="Peta 3D Cesium"></div>
+
+      <!-- Layer efek futuristik -->
+      <div class="fx-layer" id="fxLayer"></div>
+      <div class="scanlines" id="scanlines"></div>
+
+      <!-- Overlay tags -->
+      <div class="map-overlay">
+        <div class="tag cyan">Peta 3D</div>
+        <div class="tag magenta">OSM Buildings</div>
+        <div class="tag amber">CCTV Malang</div>
+        <div class="tag blue">HUD Mode</div>
+      </div>
+
+      <!-- HUD lines -->
+      <div class="hud-lines"></div>
+
+      <!-- Bottom tabs -->
+      <div class="bottom-tabs">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="cctv">CCTV</button>
+        <button class="tab" data-tab="kota">Kota</button>
+      </div>
+    </section>
+
+    <!-- PANEL KANAN -->
+    <aside class="right panel">
+      <div class="card cctv-info-card">
+        <div class="card-title">Informasi CCTV Terpilih</div>
+        <div id="selectedInfo" class="info-empty">
+          <div class="empty-title">Belum ada CCTV dipilih</div>
+          <div>Klik salah satu ikon CCTV pada peta. Video live, detail lokasi, koordinat, dan tautan streaming akan muncul di panel kanan ini.</div>
+        </div>
+      </div>
+
+      <div class="map-tools">
+        <div class="tool-card">
+          <div class="tool-title">
+            <span>Kontrol Layer</span>
+            <span class="pill" id="pillStatus">LIVE</span>
+          </div>
+
+          <div class="toggle on" id="tglBuildings">
+            <div class="label">Bangunan 3D</div>
+            <div class="switch"><div class="knob"></div></div>
+          </div>
+
+          <div class="toggle on" id="tglTerrain">
+            <div class="label">Terrain</div>
+            <div class="switch"><div class="knob"></div></div>
+          </div>
+
+          <div class="toggle on" id="tglCctv">
+            <div class="label">Layer CCTV</div>
+            <div class="switch"><div class="knob"></div></div>
+          </div>
+
+          <div class="toggle on" id="tglScan">
+            <div class="label">Scanlines</div>
+            <div class="switch"><div class="knob"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Status Sistem</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <span class="chip">CesiumJS</span>
+          <span class="chip">3D Buildings</span>
+          <span class="chip">CCTV Layer</span>
+          <span class="chip">Ion Asset 2719542</span>
+        </div>
+        <div style="margin-top:10px; font-size:12px; opacity:.8; line-height:1.4">
+          Klik ikon CCTV untuk membuka video live di panel kanan. Streaming CCTV diarahkan melalui <b>cctv_proxy.php</b> atau reverse proxy Nginx agar tidak diblokir mixed content. Asset 3D Ion ID 2719542 sudah dimuat sebagai layer utama pada peta.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tips Visual</div>
+        <div style="font-size:12px; opacity:.85; line-height:1.45">
+          Aktifkan <b>Terrain</b> agar kontur lebih realistis.
+          Aktifkan <b>Scanlines</b> untuk gaya HUD futuristik.
+          Layer <b>CCTV</b> akan menampilkan titik kamera berdasarkan data Anda.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Legenda</div>
+        <div class="legend">
+          <span><i class="c1"></i> CCTV</span>
+          <span><i class="c2"></i> Bangunan</span>
+          <span><i class="c3"></i> HUD</span>
+          <span><i class="c4"></i> Terrain</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    /***********************
+     * 1) Jam & tanggal UI
+     ***********************/
+    function pad2(n){ return String(n).padStart(2, "0"); }
+    function updateClock(){
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = pad2(now.getMonth() + 1);
+      const dd = pad2(now.getDate());
+      const hh = pad2(now.getHours());
+      const mi = pad2(now.getMinutes());
+      const ss = pad2(now.getSeconds());
+      document.getElementById("chipTanggal").textContent = `${yyyy}-${mm}-${dd}`;
+      document.getElementById("chipJam").textContent = `${hh}:${mi}:${ss}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    /********************************************************
+     * 2) DATA CCTV MALANG (diambil dari Excel Anda, dibenamkan)
+     ********************************************************/
+    const CCTV_MALANG = [{"kecamatan": "sukun", "lokasi": "jl.s.supriadi arah selatan", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=077782103576869531500342", "lat": -8.0202, "lon": 112.619075, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "sukun", "lokasi": "jl.kol sugiono arah utara", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=530731075384566382488335", "lat": -8.022747222222224, "lon": 112.62743055555555, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "sukun", "lokasi": "jl.terusan dieng arah barat", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=077636403437244032401245", "lat": -7.973275, "lon": 112.61306111111111, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "sukun", "lokasi": "jl.raya langsep arah utara", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=448993781462444492103703", "lat": -7.983427777777778, "lon": 112.61429444444444, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "sukun", "lokasi": "jl mergan lori arah selatan", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=473307088033186544380122", "lat": -7.983427777777778, "lon": 112.61429444444444, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "sukun", "lokasi": "jl jupri arah barat", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=425250660135490708615779", "lat": -7.983427777777778, "lon": 112.61429444444444, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "sukun", "lokasi": "jl.s.supriadi arah utara", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=456402990956810340846657", "lat": -8.000436111111112, "lon": 112.61815555555555, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "sukun", "lokasi": "gadang arah timur", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=292570058740218968707392", "lat": -8.022747222222224, "lon": 112.62743055555555, "bearing": 90.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "sukun", "lokasi": "jl. kol sugiono arah barat", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=665273809084361627599583", "lat": -8.022747222222224, "lon": 112.62743055555555, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl, Galunggung arah utara", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=564510132783646943412082", "lat": -7.973275, "lon": 112.61306111111111, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. kawi arah timur depan mog", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=192932202274819493009134", "lat": -7.9779277777777775, "lon": 112.62335833333333, "bearing": 90.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. kawi arah barat depan mog", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=494044159463642643864378", "lat": -7.9779277777777775, "lon": 112.62335833333333, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "taman ijen 2 kursi lama", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=611606309979396608294034", "lat": -7.966958333333333, "lon": 112.62419999999999, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "veteran depan matos pojok parkiran mask arah barat", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=203191103351222911095423", "lat": -7.9578444444444445, "lon": 112.61900277777777, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl retawu depan museum Brawijaya", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=996051630808365936867998", "lat": -7.971738888888889, "lon": 112.62165555555555, "bearing": 135.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl basuki rahmad kayutangan zebracross", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=383467698805698590809269", "lat": -7.978547222222223, "lon": 112.62934722222222, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl basuki rahmad kayutangan depan gea", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=606108686446513105047168", "lat": -7.978355555555556, "lon": 112.62950277777777, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl, semeru arah timur depan pizza", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=253598743355115924306355", "lat": -7.976075, "lon": 112.62694722222221, "bearing": 90.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "simpang balapan arah barat depan polkesma", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=383651772119550945722301", "lat": -7.965363888888889, "lon": 112.62525555555555, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. kawi arah timur depan rumah walikota", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=642085663280892020139410", "lat": -7.975847222222223, "lon": 112.62043888888888, "bearing": 90.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl basuki rahmat arah selatan depan bca kaytangan", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=771615331018457682499213", "lat": -7.976375, "lon": 112.62951944444444, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. bromo arah utara tugu bank permata jingga", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=898902535875476482823426", "lat": -7.976425, "lon": 112.62948055555555, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl semeru arah barat depan lafayete", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=776763144322125195609829", "lat": -7.976425, "lon": 112.62948055555555, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. semeru arah barat arah stadion depan bank permatsa", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=717958972035700755246088", "lat": -7.976075, "lon": 112.62694722222221, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl tugu arah utara depan hotel tugu", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=621626709539809832237018", "lat": -7.976927777777778, "lon": 112.63345833333334, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl kertanegara timur depan gedung dprd", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=460831732288949136305143", "lat": -7.9772694444444445, "lon": 112.634775, "bearing": 45.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl tugu arah selatan depan gedung dprd arah balkot", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=188896189032493229715252", "lat": -7.9772694444444445, "lon": 112.634775, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl kahuripaan arah timur samping bca araj balkot", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=994477999826297213214297", "lat": -7.976375, "lon": 112.62951944444444, "bearing": 90.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. Halmahera arah selatan barat rel kereta api", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=858976621501627801724527", "lat": -7.9924277777777775, "lon": 112.62836666666666, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. bungkil pos pemadam kebakaran", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=836708782306919156448722", "lat": -7.9924277777777775, "lon": 112.62836666666666, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl letjend sutoyo depan hotel savana", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=052357343710249808147659", "lat": -7.991072222222222, "lon": 112.62883333333333, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl letjend sutoyo arah selatan depan savana", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=435572404308262635105603", "lat": -7.961777777777778, "lon": 112.6364138888889, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. veteran arah barat depan tmp", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=838413871917489102204055", "lat": -7.95995, "lon": 112.6218111111111, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. ijen arah utara depan kopi kenangan", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=268660637162985239935545", "lat": -7.963413888888889, "lon": 112.62525833333332, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "bundaran jalan bandung arah barat", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=699355759296848496652742", "lat": -7.962088888888889, "lon": 112.62601666666666, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl ijen arah selatan depan kf 36", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=742158442433359267079827", "lat": -7.963413888888889, "lon": 112.62525833333332, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. wr Supratman arah rs lavalete", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=660120947895309721081787", "lat": -7.964744444444444, "lon": 112.63486111111112, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl, wr Supratman arah barat", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=465602083379458835437909", "lat": -7.966838888888889, "lon": 112.63824166666667, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl jenderal Sudirman arah barat bengawan solo", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=855876619782149417527265", "lat": -7.966816666666666, "lon": 112.63855000000001, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "smpn 5 malang", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=054856199643889577039217", "lat": -7.967205555555556, "lon": 112.63899444444445, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "ijen arah utara depan richesee", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=098343692068108583411220", "lat": -7.9659361111111116, "lon": 112.62490555555554, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "arah utara depna gereja ijen", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=408386140723144623861301", "lat": -7.968658333333334, "lon": 112.62376666666665, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "ijen arah utara", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=735506210316890709562691", "lat": -7.968658333333334, "lon": 112.62376666666665, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. Sudirman arah selatan depan lapangan rampal", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=024271174990073130193626", "lat": -7.9732972222222225, "lon": 112.63842500000001, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl, patimmura arah selatan belakang rsu", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=643592251459005888214586", "lat": -7.97145, "lon": 112.63338055555556, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl, patimura arah barat", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=008689729209182017615333", "lat": -7.973519444444444, "lon": 112.63674444444445, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl ja suprapto arh utsr depan pln up 3", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=395810883923327543094739", "lat": -7.9742444444444445, "lon": 112.62980833333333, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl basuki rahmat arah selatan depan mcd lama kytngan", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=876263708687156206364361", "lat": -7.9742444444444445, "lon": 112.62980833333333, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl Slamet riadi arah barat depan toko", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=876263708687156206364361", "lat": -7.9742444444444445, "lon": 112.62980833333333, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. ijen arah utara depan museum Brawijaya", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=627129209468594400740829", "lat": -7.971738888888889, "lon": 112.62165555555555, "bearing": 0.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. ijen arah selatan depa perpus", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=143760541432235845327573", "lat": -7.972375, "lon": 112.62180277777777, "bearing": 180.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl. semeru arah timur dpean perpustakaan", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=421607974337796002196100", "lat": -7.972375, "lon": 112.62180277777777, "bearing": 90.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl dieng arah timur arah bpn kabupaten", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=547359693237078797537666", "lat": -7.973275, "lon": 112.61306111111111, "bearing": 90.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "gki bromo arah utaea", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=547359693237078797537666", "lat": -7.979158333333333, "lon": 112.6253111111111, "bearing": null, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "arah barat jl ijen perempatan lampu merah", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=495229592063339988032865", "lat": -7.975813888888889, "lon": 112.62078333333332, "bearing": 270.0, "range": 120.0, "fov": 60.0}, {"kecamatan": "klojen", "lokasi": "jl arjuno arah utara depan bri klojen", "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=599118267175295987908194", "lat": -7.980080555555555, "lon": 112.62614444444444, "bearing": 0.0, "range": 120.0, "fov": 60.0}];
+
+    // catatan: data di atas adalah subset yang sudah saya embed.
+    // Anda boleh menambah/replace dengan full list Anda (sekarang KPI tetap dihitung dari array ini).
+
+    document.getElementById("kpiCctv").textContent = String(CCTV_MALANG.length);
+
+    /********************************************************
+     * 3) Ikon CCTV (billboard SVG) + opsi model 3D glTF
+     ********************************************************/
+    const CCTV_SVG = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#39d5ff" stop-opacity="1"/>
+            <stop offset="1" stop-color="#ff4de3" stop-opacity="1"/>
+          </linearGradient>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge>
+              <feMergeNode in="b"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <g filter="url(#glow)">
+          <path fill="url(#g)" d="M28 44h56l10 10v8l-10 10H56l-12 12H28l10-12H28z"/>
+          <circle cx="66" cy="58" r="10" fill="#07162a" opacity="0.9"/>
+          <circle cx="66" cy="58" r="5" fill="#39d5ff"/>
+          <path d="M24 86h56v10H24z" fill="#39d5ff" opacity="0.35"/>
+          <path d="M80 86h24v10H80z" fill="#ff4de3" opacity="0.35"/>
+        </g>
+      </svg>
+    `.trim();
+    const CCTV_ICON = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(CCTV_SVG);
+
+    // kalau Anda punya model 3D, taruh di path ini:
+    const CCTV_MODEL_URI = "assets/models/cctv.glb"; // opsional (Anda sediakan file-nya)
+
+    /****************************
+     * 4) CESIUM INIT (FIX ERROR)
+     ****************************/
+    (async () => {
+      // TOKEN ANDA
+      Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhYWQ4OWMzYS00MjA4LTQwMjMtODAzNy03OTBmNmU0YTExYzYiLCJpZCI6NzU1Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0OTc2NjgwNn0.IznlFpdNxINwCo9A6W4lxynEEVXfOx4i4MHA7CaHshI';
+
+      const viewer = new Cesium.Viewer("cesiumContainer", {
+        animation: false,
+        timeline: false,
+        baseLayerPicker: true,
+        geocoder: true,
+        homeButton: true,
+        sceneModePicker: true,
+        navigationHelpButton: false,
+        fullscreenButton: false,
+        infoBox: false,
+        selectionIndicator: true,
+        shouldAnimate: true
+      });
+
+      // Future look tuning
+      viewer.scene.globe.depthTestAgainstTerrain = true;
+      viewer.scene.globe.enableLighting = true;
+      viewer.scene.highDynamicRange = true;
+      viewer.scene.postProcessStages.fxaa.enabled = true;
+      viewer.scene.fog.enabled = true;
+      viewer.scene.fog.density = 0.00018;
+      viewer.scene.fog.screenSpaceErrorFactor = 4.0;
+
+      // Bloom
+      const bloom = viewer.scene.postProcessStages.bloom;
+      bloom.enabled = true;
+      bloom.uniforms.glowOnly = false;
+      bloom.uniforms.contrast = 128;
+      bloom.uniforms.brightness = -0.15;
+      bloom.uniforms.delta = 1.0;
+      bloom.uniforms.sigma = 2.8;
+      bloom.uniforms.stepSize = 1.0;
+
+      // Terrain
+      let terrainOn = true;
+      viewer.terrainProvider = await Cesium.createWorldTerrainAsync({
+        requestVertexNormals: true,
+        requestWaterMask: true
+      });
+
+      /****************************************
+       * 5) Custom Cesium Ion 3D Tileset
+       * Asset ID: 2719542
+       ****************************************/
+      let customTileset = null;
+      try {
+        customTileset = await Cesium.Cesium3DTileset.fromIonAssetId(2719542);
+        viewer.scene.primitives.add(customTileset);
+
+        // Fokus awal ke tileset terlebih dahulu agar model termuat.
+        await viewer.zoomTo(customTileset);
+      } catch (error) {
+        console.log(`Error loading tileset: ${error}`);
+      }
+
+      // Kamera awal diarahkan ke lokasi asset 3D yang Anda berikan.
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(112.6238523, -7.9788433, 10),
+        orientation: {
+          heading: Cesium.Math.toRadians(0.0),
+          pitch: Cesium.Math.toRadians(-15.0),
+          roll: 0.0
+        },
+        duration: 1.2
+      });
+
+      /****************************************
+       * 6) OSM 3D Buildings
+       ****************************************/
+      let buildingsTileset = null;
+      let buildingsOn = true;
+
+      async function enableBuildings(){
+        if (buildingsTileset) { buildingsTileset.show = true; return; }
+        buildingsTileset = await Cesium.createOsmBuildingsAsync();
+        viewer.scene.primitives.add(buildingsTileset);
+        viewer.shadows = true;
+        viewer.terrainShadows = Cesium.ShadowMode.ENABLED;
+      }
+      function disableBuildings(){
+        if (buildingsTileset) buildingsTileset.show = false;
+      }
+      await enableBuildings();
+
+      /****************************************
+       * 7) Layer CCTV (ikon / model 3D)
+       ****************************************/
+      let cctvEntities = [];
+      let cctvOn = true;
+
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+
+      function getPropertyValue(properties, key){
+        const value = properties?.[key];
+        return value?.getValue ? value.getValue() : value;
+      }
+
+      function isValidStreamUrl(url){
+        try {
+          const parsed = new URL(String(url));
+          return parsed.protocol === "http:" || parsed.protocol === "https:";
+        } catch (e) {
+          return false;
+        }
+      }
+
+      /*
+       * CCTV embed policy
+       * - direct  : iframe langsung ke URL CCTV asli. Cocok hanya kalau dashboard dibuka via http.
+       * - php     : iframe lewat cctv_proxy.php agar HTTP CCTV tidak diblokir saat dashboard HTTPS.
+       * - nginx   : iframe lewat reverse proxy /cctv-proxy/. Cocok untuk server produksi.
+       */
+      const CCTV_EMBED_MODE = "php"; // ganti ke "nginx" bila memakai konfigurasi Nginx yang disertakan
+      const CCTV_PROXY_PHP = "cctv_proxy.php?url=";
+      const CCTV_PROXY_NGINX = "/cctv-proxy/";
+      const CCTV_ORIGIN = "http://stream.cctv.malangkota.go.id/";
+
+      function toEmbedStreamUrl(url){
+        if (!isValidStreamUrl(url)) return "";
+        const raw = String(url);
+
+        if (CCTV_EMBED_MODE === "direct") return raw;
+
+        if (CCTV_EMBED_MODE === "nginx") {
+          return raw.replace(CCTV_ORIGIN, CCTV_PROXY_NGINX);
+        }
+
+        // default: server-side PHP proxy, same-origin dengan dashboard
+        return CCTV_PROXY_PHP + encodeURIComponent(raw);
+      }
+
+      function makeCctvPlayer(url, title){
+        if (!isValidStreamUrl(url)) {
+          return `<div class="video-warning">Link streaming CCTV belum tersedia atau tidak valid.</div>`;
+        }
+
+        const embedUrl = toEmbedStreamUrl(url);
+        const safeEmbedUrl = escapeHtml(embedUrl);
+        const safeTitle = escapeHtml(title || "Live CCTV");
+
+        return `
+          <div class="cctv-player">
+            <div class="player-head">
+              <span>Live CCTV</span>
+              <span class="live-dot">LIVE</span>
+            </div>
+            <div class="player-frame">
+              <iframe
+                src="${safeEmbedUrl}"
+                title="${safeTitle}"
+                loading="eager"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture; camera; microphone"
+                referrerpolicy="no-referrer"
+                allowfullscreen>
+              </iframe>
+            </div>
+            <div class="player-note">
+              Video diputar melalui proxy dashboard agar tidak terkena mixed-content blocking. Jalankan file ini melalui web server PHP atau gunakan konfigurasi Nginx proxy yang disertakan.
+            </div>
+          </div>`;
+      }
+
+      function addCctvLayer(){
+        if (cctvEntities.length) {
+          cctvEntities.forEach(e => e.show = true);
+          return;
+        }
+
+        // NOTE: default pakai billboard SVG (stabil & ringan).
+        // Kalau Anda ingin 3D model, set USE_3D_MODEL = true (dan sediakan file glb).
+        const USE_3D_MODEL = false;
+
+        cctvEntities = CCTV_MALANG.map((c, idx) => {
+          const pos = Cesium.Cartesian3.fromDegrees(c.lon, c.lat, 10);
+
+          const description = `
+            <div style="font-family: system-ui; line-height:1.4">
+              <div style="font-weight:700; margin-bottom:6px">CCTV Kota Malang</div>
+              <div><b>Kecamatan:</b> ${escapeHtml(c.kecamatan)}</div>
+              <div><b>Lokasi:</b> ${escapeHtml(c.lokasi)}</div>
+              <div style="margin-top:8px">
+                <a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">Buka Streaming CCTV</a>
+              </div>
+              <div style="margin-top:8px; opacity:.75; font-size:12px">
+                Koordinat: ${c.lat.toFixed(6)}, ${c.lon.toFixed(6)}
+              </div>
+            </div>
+          `;
+
+          if (USE_3D_MODEL) {
+            return viewer.entities.add({
+              id: `cctv-${idx}`,
+              name: `CCTV: ${c.lokasi}`,
+              properties: { kecamatan: c.kecamatan, lokasi: c.lokasi, url: c.url, lat: c.lat, lon: c.lon, bearing: c.bearing, range: c.range, fov: c.fov },
+              position: pos,
+              description,
+              model: {
+                uri: CCTV_MODEL_URI,
+                scale: 1.2,
+                minimumPixelSize: 36,
+                maximumScale: 120
+              },
+              label: {
+                text: "CCTV",
+                font: "12px sans-serif",
+                pixelOffset: new Cesium.Cartesian2(0, -38),
+                showBackground: true,
+                backgroundColor: Cesium.Color.fromCssColorString("rgba(7,18,45,.65)"),
+                outlineColor: Cesium.Color.fromCssColorString("rgba(57,213,255,.45)"),
+                outlineWidth: 2,
+                fillColor: Cesium.Color.fromCssColorString("rgba(230,245,255,.92)")
+              }
+            });
+          }
+
+          // Billboard SVG (default)
+          return viewer.entities.add({
+            id: `cctv-${idx}`,
+            name: `CCTV: ${c.lokasi}`,
+            properties: { kecamatan: c.kecamatan, lokasi: c.lokasi, url: c.url, lat: c.lat, lon: c.lon, bearing: c.bearing, range: c.range, fov: c.fov },
+            position: pos,
+            description,
+            billboard: {
+              image: CCTV_ICON,
+              width: 34,
+              height: 34,
+              verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+              heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+              disableDepthTestDistance: Number.POSITIVE_INFINITY
+            }
+          });
+        });
+
+        document.getElementById("kpiCctv").textContent = String(cctvEntities.length);
+      }
+
+      function removeCctvLayer(){
+        cctvEntities.forEach(e => e.show = false);
+      }
+
+      addCctvLayer();
+
+      /****************************************
+       * 7b) Panel kanan untuk informasi klik CCTV
+       ****************************************/
+      function updateSelectedInfo(entity){
+        const box = document.getElementById("selectedInfo");
+        if (!box) return;
+
+        if (!entity || !entity.properties || !String(entity.id || "").startsWith("cctv-")) {
+          box.className = "info-empty";
+          box.innerHTML = `
+            <div class="empty-title">Belum ada CCTV dipilih</div>
+            <div>Klik salah satu ikon CCTV pada peta. Video live, detail lokasi, koordinat, dan tautan streaming akan muncul di panel kanan ini.</div>
+          `;
+          return;
+        }
+
+        const p = entity.properties;
+        const kecamatan = getPropertyValue(p, "kecamatan") || "-";
+        const lokasi = getPropertyValue(p, "lokasi") || "-";
+        const url = getPropertyValue(p, "url") || "";
+        const lat = Number(getPropertyValue(p, "lat"));
+        const lon = Number(getPropertyValue(p, "lon"));
+        const bearing = getPropertyValue(p, "bearing");
+        const range = getPropertyValue(p, "range");
+        const fov = getPropertyValue(p, "fov");
+
+        box.className = "cctv-detail";
+        box.innerHTML = `
+          ${makeCctvPlayer(url, lokasi)}
+          <div class="detail-grid">
+            <div class="detail-row"><div class="detail-key">Layer</div><div class="detail-val"><b>CCTV Kota Malang</b></div></div>
+            <div class="detail-row"><div class="detail-key">Kecamatan</div><div class="detail-val">${escapeHtml(kecamatan)}</div></div>
+            <div class="detail-row"><div class="detail-key">Lokasi</div><div class="detail-val">${escapeHtml(lokasi)}</div></div>
+            <div class="detail-row"><div class="detail-key">Koordinat</div><div class="detail-val">${Number.isFinite(lat) ? lat.toFixed(6) : "-"}, ${Number.isFinite(lon) ? lon.toFixed(6) : "-"}</div></div>
+            <div class="detail-row"><div class="detail-key">Arah/FOV</div><div class="detail-val">${bearing ?? "-"}° / ${fov ?? "-"}°</div></div>
+            <div class="detail-row"><div class="detail-key">Jangkauan</div><div class="detail-val">${range ?? "-"} m</div></div>
+          </div>
+          <a class="stream-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener">Buka Streaming CCTV di Tab Baru</a>
+        `;
+      }
+
+      viewer.selectedEntityChanged.addEventListener(updateSelectedInfo);
+
+      /****************************************
+       * 8) UI: FlyTo sidebar + Tabs
+       ****************************************/
+      const flyTargets = {
+        malang:     { lon: 112.6304, lat: -7.9666, height: 14000, heading: 20, pitch: -28 },
+        sukun:      { lon: 112.6135, lat: -8.0000, height: 12000, heading: 25, pitch: -30 },
+        klojen:     { lon: 112.6320, lat: -7.9780, height: 11000, heading: 25, pitch: -30 },
+        blimbing:   { lon: 112.6480, lat: -7.9500, height: 12000, heading: 25, pitch: -30 },
+        lowokwaru:  { lon: 112.6120, lat: -7.9550, height: 12000, heading: 25, pitch: -30 }
+      };
+
+      document.querySelectorAll(".nav-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const key = btn.getAttribute("data-fly");
+          const t = flyTargets[key];
+          if(!t) return;
+
+          viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(t.lon, t.lat, t.height),
+            orientation: {
+              heading: Cesium.Math.toRadians(t.heading),
+              pitch: Cesium.Math.toRadians(t.pitch),
+              roll: 0.0
+            },
+            duration: 1.0
+          });
+        });
+      });
+
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          const key = tab.getAttribute("data-tab");
+
+          if (key === "cctv") {
+            // zoom ke pusat Malang dan tunjukkan layer CCTV
+            viewer.camera.flyTo({
+              destination: Cesium.Cartesian3.fromDegrees(112.6304, -7.9666, 15000.0),
+              duration: 1.0
+            });
+          }
+        });
+      });
+
+      /****************************************
+       * 9) Toggle controls
+       ****************************************/
+      function setToggle(el, on){ el.classList.toggle("on", on); }
+      function toggle(el){
+        const on = !el.classList.contains("on");
+        setToggle(el, on);
+        return on;
+      }
+
+      const tglBuildings = document.getElementById("tglBuildings");
+      const tglTerrain = document.getElementById("tglTerrain");
+      const tglCctv = document.getElementById("tglCctv");
+      const tglScan = document.getElementById("tglScan");
+      const scanlines = document.getElementById("scanlines");
+      const fxLayer = document.getElementById("fxLayer");
+
+      // states
+      setToggle(tglBuildings, true);
+      setToggle(tglTerrain, true);
+      setToggle(tglCctv, true);
+      setToggle(tglScan, true);
+
+      tglBuildings.addEventListener("click", async () => {
+        buildingsOn = toggle(tglBuildings);
+        if (buildingsOn) await enableBuildings();
+        else disableBuildings();
+        document.getElementById("kpiLayer").textContent = buildingsOn ? "BUILDINGS ON" : "BUILDINGS OFF";
+      });
+
+      tglTerrain.addEventListener("click", async () => {
+        terrainOn = toggle(tglTerrain);
+        if (terrainOn){
+          viewer.terrainProvider = await Cesium.createWorldTerrainAsync({
+            requestVertexNormals: true,
+            requestWaterMask: true
+          });
+        } else {
+          viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
+        }
+      });
+
+      tglCctv.addEventListener("click", () => {
+        cctvOn = toggle(tglCctv);
+        if (cctvOn) addCctvLayer();
+        else removeCctvLayer();
+      });
+
+      tglScan.addEventListener("click", () => {
+        const on = toggle(tglScan);
+        scanlines.classList.toggle("off", !on);
+        fxLayer.classList.toggle("off", !on);
+      });
+
+    })(); // <-- end async IIFE
+  </script>
+</body>
+</html>
