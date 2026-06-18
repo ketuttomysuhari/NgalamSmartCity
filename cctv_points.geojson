@@ -1,0 +1,1004 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.619075,
+          -8.0202
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "jl.s.supriadi arah selatan",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=077782103576869531500342",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62743055555555,
+          -8.022747222222224
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "jl.kol sugiono arah utara",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=530731075384566382488335",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.61306111111111,
+          -7.973275
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "jl.terusan dieng arah barat",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=077636403437244032401245",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.61429444444444,
+          -7.983427777777778
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "jl.raya langsep arah utara",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=448993781462444492103703",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.61429444444444,
+          -7.983427777777778
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "jl mergan lori arah selatan",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=473307088033186544380122",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.61429444444444,
+          -7.983427777777778
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "jl jupri arah barat",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=425250660135490708615779",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.61815555555555,
+          -8.000436111111112
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "jl.s.supriadi arah utara",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=456402990956810340846657",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62743055555555,
+          -8.022747222222224
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "gadang arah timur",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=292570058740218968707392",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 90.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62743055555555,
+          -8.022747222222224
+        ]
+      },
+      "properties": {
+        "kecamatan": "sukun",
+        "lokasi": "jl. kol sugiono arah barat",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=665273809084361627599583",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.61306111111111,
+          -7.973275
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl, Galunggung arah utara",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=564510132783646943412082",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62335833333333,
+          -7.9779277777777775
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. kawi arah timur depan mog",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=192932202274819493009134",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 90.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62335833333333,
+          -7.9779277777777775
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. kawi arah barat depan mog",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=494044159463642643864378",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62419999999999,
+          -7.966958333333333
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "taman ijen 2 kursi lama",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=611606309979396608294034",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.61900277777777,
+          -7.9578444444444445
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "veteran depan matos pojok parkiran mask arah barat",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=203191103351222911095423",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62165555555555,
+          -7.971738888888889
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl retawu depan museum Brawijaya",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=996051630808365936867998",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 135.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62934722222222,
+          -7.978547222222223
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl basuki rahmad kayutangan zebracross",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=383467698805698590809269",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62950277777777,
+          -7.978355555555556
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl basuki rahmad kayutangan depan gea",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=606108686446513105047168",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62694722222221,
+          -7.976075
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl, semeru arah timur depan pizza",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=253598743355115924306355",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 90.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62525555555555,
+          -7.965363888888889
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "simpang balapan arah barat depan polkesma",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=383651772119550945722301",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62043888888888,
+          -7.975847222222223
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. kawi arah timur depan rumah walikota",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=642085663280892020139410",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 90.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62951944444444,
+          -7.976375
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl basuki rahmat arah selatan depan bca kaytangan",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=771615331018457682499213",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62948055555555,
+          -7.976425
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. bromo arah utara tugu bank permata jingga",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=898902535875476482823426",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62948055555555,
+          -7.976425
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl semeru arah barat depan lafayete",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=776763144322125195609829",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62694722222221,
+          -7.976075
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. semeru arah barat arah stadion depan bank permatsa",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=717958972035700755246088",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63345833333334,
+          -7.976927777777778
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl tugu arah utara depan hotel tugu",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=621626709539809832237018",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.634775,
+          -7.9772694444444445
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl kertanegara timur depan gedung dprd",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=460831732288949136305143",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 45.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.634775,
+          -7.9772694444444445
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl tugu arah selatan depan gedung dprd arah balkot",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=188896189032493229715252",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62951944444444,
+          -7.976375
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl kahuripaan arah timur samping bca araj balkot",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=994477999826297213214297",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 90.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62836666666666,
+          -7.9924277777777775
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. Halmahera arah selatan barat rel kereta api",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=858976621501627801724527",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62836666666666,
+          -7.9924277777777775
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. bungkil pos pemadam kebakaran",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=836708782306919156448722",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62883333333333,
+          -7.991072222222222
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl letjend sutoyo depan hotel savana",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=052357343710249808147659",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.6364138888889,
+          -7.961777777777778
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl letjend sutoyo arah selatan depan savana",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=435572404308262635105603",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.6218111111111,
+          -7.95995
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. veteran arah barat depan tmp",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=838413871917489102204055",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62525833333332,
+          -7.963413888888889
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. ijen arah utara depan kopi kenangan",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=268660637162985239935545",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62601666666666,
+          -7.962088888888889
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "bundaran jalan bandung arah barat",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=699355759296848496652742",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62525833333332,
+          -7.963413888888889
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl ijen arah selatan depan kf 36",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=742158442433359267079827",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63486111111112,
+          -7.964744444444444
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. wr Supratman arah rs lavalete",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=660120947895309721081787",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63824166666667,
+          -7.966838888888889
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl, wr Supratman arah barat",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=465602083379458835437909",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63855000000001,
+          -7.966816666666666
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl jenderal Sudirman arah barat bengawan solo",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=855876619782149417527265",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63899444444445,
+          -7.967205555555556
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "smpn 5 malang",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=054856199643889577039217",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62490555555554,
+          -7.9659361111111116
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "ijen arah utara depan richesee",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=098343692068108583411220",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62376666666665,
+          -7.968658333333334
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "arah utara depna gereja ijen",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=408386140723144623861301",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62376666666665,
+          -7.968658333333334
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "ijen arah utara",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=735506210316890709562691",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63842500000001,
+          -7.9732972222222225
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. Sudirman arah selatan depan lapangan rampal",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=024271174990073130193626",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63338055555556,
+          -7.97145
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl, patimmura arah selatan belakang rsu",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=643592251459005888214586",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63674444444445,
+          -7.973519444444444
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl, patimura arah barat",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=008689729209182017615333",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62980833333333,
+          -7.9742444444444445
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl ja suprapto arh utsr depan pln up 3",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=395810883923327543094739",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62980833333333,
+          -7.9742444444444445
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl basuki rahmat arah selatan depan mcd lama kytngan",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=876263708687156206364361",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62980833333333,
+          -7.9742444444444445
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl Slamet riadi arah barat depan toko",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=876263708687156206364361",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62165555555555,
+          -7.971738888888889
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. ijen arah utara depan museum Brawijaya",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=627129209468594400740829",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62180277777777,
+          -7.972375
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. ijen arah selatan depa perpus",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=143760541432235845327573",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 180.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62180277777777,
+          -7.972375
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl. semeru arah timur dpean perpustakaan",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=421607974337796002196100",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 90.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.61306111111111,
+          -7.973275
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl dieng arah timur arah bpn kabupaten",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=547359693237078797537666",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 90.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.6253111111111,
+          -7.979158333333333
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "gki bromo arah utaea",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=547359693237078797537666",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62078333333332,
+          -7.975813888888889
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "arah barat jl ijen perempatan lampu merah",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=495229592063339988032865",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 270.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.62614444444444,
+          -7.980080555555555
+        ]
+      },
+      "properties": {
+        "kecamatan": "klojen",
+        "lokasi": "jl arjuno arah utara depan bri klojen",
+        "url": "http://stream.cctv.malangkota.go.id/WebRTCApp/play.html?name=599118267175295987908194",
+        "_fov_deg": 60.0,
+        "_range_m": 120.0,
+        "_bearing_deg": 0.0
+      }
+    }
+  ]
+}
